@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
+﻿using CleanTF2.Core.Utilities;
 
-namespace CleanTF2.Core
+namespace CleanTF2.Core.Valve
 {
     /// <summary>
     /// <seealso href="https://developer.valvesoftware.com/wiki/HLLib"></seealso> 

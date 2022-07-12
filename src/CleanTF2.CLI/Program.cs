@@ -1,5 +1,7 @@
 ﻿using CleanTF2.CLI.Commands;
 using CleanTF2.Core;
+using CleanTF2.Core.Utilities;
+using CleanTF2.Core.Valve;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console.Cli;
@@ -36,6 +38,8 @@ namespace CleanTF2.CLI
                 .AddSingleton<IFile, FileWrapper>()
                 .AddSingleton<IDirectory, DirectoryWrapper>()
                 .AddSingleton<IHLExtract, HLExtract>()
+                .AddSingleton<IVTFCmd, VTFCmd>()
+                .AddSingleton<IImageManipulator, ImageManipulator>()
                 .AddSingleton<FlatTextureGenerator>();
         }
     }

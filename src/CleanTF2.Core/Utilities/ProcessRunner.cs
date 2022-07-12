@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace CleanTF2.Core
+namespace CleanTF2.Core.Utilities
 {
     public class ProcessRunner : IProcessRunner
     {

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace CleanTF2.Core
+﻿namespace CleanTF2.Core.Valve
 {
     public interface IHLExtract
     {
