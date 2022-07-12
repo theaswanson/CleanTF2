@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "CleanTF2.CLI": {
+      "commandName": "Project"
+    }
+  }
+}
