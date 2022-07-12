@@ -1,9 +1,11 @@
-﻿namespace CleanTF2.Core
+﻿using System.Diagnostics;
+
+namespace CleanTF2.Core
 {
     /// <summary>
     /// <seealso href="https://developer.valvesoftware.com/wiki/HLLib"></seealso> 
     /// </summary>
-    public class HLExtract
+    public class HLExtract : IHLExtract
     {
         private readonly IProcessRunner _processRunner;
 
@@ -12,7 +14,7 @@
             _processRunner = processRunner;
         }
 
-        public void Run(string package, string extractDirectory, string pathToExtract, bool useFileMapping = false, bool allowVolatileAccess = false, bool useSilentMode = false)
+        public async Task Run(string package, string extractDirectory, string pathToExtract, bool useFileMapping = false, bool allowVolatileAccess = false, bool useSilentMode = false)
         {
             var args = new List<string>
             {
@@ -20,6 +22,7 @@
                 "-d", extractDirectory,
                 "-e", pathToExtract,
             };
+
             if (useFileMapping)
             {
                 args.Add("-m");
@@ -33,7 +36,7 @@
                 args.Add("-s");
             }
 
-            _processRunner.Start("hlextract.exe", args);
+            await _processRunner.Run("hlextract.exe", args);
         }
     }
 }

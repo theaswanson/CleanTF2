@@ -1,9 +1,13 @@
-﻿using System.Diagnostics;
-
-namespace CleanTF2.Core
+﻿namespace CleanTF2.Core
 {
     public interface IProcessRunner
     {
-        Process Start(string fileName, IEnumerable<string> arguments);
+        /// <summary>
+        /// Starts a process with the given parameters and waits for the process to exit.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="arguments"></param>
+        /// <returns>The process's ExitCode.</returns>
+        Task<int> Run(string fileName, IEnumerable<string> arguments);
     }
 }

@@ -4,9 +4,11 @@ namespace CleanTF2.Core
 {
     public class ProcessRunner : IProcessRunner
     {
-        public Process Start(string fileName, IEnumerable<string> arguments)
+        public async Task<int> Run(string fileName, IEnumerable<string> arguments)
         {
-            return Process.Start(fileName, arguments);
+            var process = Process.Start(fileName, arguments);
+            await process.WaitForExitAsync();
+            return process.ExitCode;
         }
     }
 }

@@ -33,7 +33,10 @@ namespace CleanTF2.CLI
         {
             services
                 .AddSingleton<IProcessRunner, ProcessRunner>()
-                .AddSingleton<HLExtract>();
+                .AddSingleton<IFile, FileWrapper>()
+                .AddSingleton<IDirectory, DirectoryWrapper>()
+                .AddSingleton<IHLExtract, HLExtract>()
+                .AddSingleton<FlatTextureGenerator>();
         }
     }
 }
