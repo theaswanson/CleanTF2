@@ -10,6 +10,8 @@ namespace CleanTF2.CLI
 {
     internal class Program
     {
+        static IServiceCollection _services;
+
         static async Task Main(string[] args)
         {
             var host = Host.CreateDefaultBuilder(args)
@@ -23,7 +25,7 @@ namespace CleanTF2.CLI
 
         private static CommandApp BuildApp()
         {
-            var app = new CommandApp();
+            var app = new CommandApp(new TypeRegistrar(_services));
             app.Configure(config =>
             {
                 config.AddCommand<FlattenCommand>("flatten");
@@ -31,16 +33,18 @@ namespace CleanTF2.CLI
             return app;
         }
 
-        static void RegisterServices(HostBuilderContext _, IServiceCollection services)
+        static void RegisterServices(HostBuilderContext hostContext, IServiceCollection services)
         {
-            services
-                .AddSingleton<IProcessRunner, ProcessRunner>()
-                .AddSingleton<IFile, FileWrapper>()
-                .AddSingleton<IDirectory, DirectoryWrapper>()
-                .AddSingleton<IHLExtract, HLExtract>()
-                .AddSingleton<IVTFCmd, VTFCmd>()
-                .AddSingleton<IImageManipulator, ImageManipulator>()
-                .AddSingleton<FlatTextureGenerator>();
+            _services = services;
+            _services
+                .AddTransient<IProcessRunner, ProcessRunner>()
+                .AddTransient<IFile, FileWrapper>()
+                .AddTransient<IDirectory, DirectoryWrapper>()
+                .AddTransient<IHLExtract, HLExtract>()
+                .AddTransient<IVTFCmd, VTFCmd>()
+                .AddTransient<IImageManipulator, ImageManipulator>()
+                .AddTransient<IFlatTextureGenerator, FlatTextureGenerator>()
+                .AddTransient<FlattenCommand>();
         }
     }
 }

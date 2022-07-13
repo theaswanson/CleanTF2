@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A81ECBF7-6670-452B-9F62-62E15854759A}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Team Fortress 2\tf\custom2\CleanTF2plus-master\dev\lists\flat.txt = ..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Team Fortress 2\tf\custom2\CleanTF2plus-master\dev\lists\flat.txt
 	EndProjectSection
 EndProject
 Global

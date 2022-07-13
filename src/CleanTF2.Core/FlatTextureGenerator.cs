@@ -1,9 +1,10 @@
-﻿using CleanTF2.Core.Utilities;
+﻿using System.Diagnostics;
+using CleanTF2.Core.Utilities;
 using CleanTF2.Core.Valve;
 
 namespace CleanTF2.Core
 {
-    public class FlatTextureGenerator
+    public class FlatTextureGenerator : IFlatTextureGenerator
     {
         private readonly IFile _file;
         private readonly IDirectory _directory;
@@ -29,58 +30,96 @@ namespace CleanTF2.Core
         public async Task Generate(string vpk, IEnumerable<string> materialsToFlatten, string outputDirectory, bool resize)
         {
             var extractedDirectory = GetExtractedDirectory(outputDirectory);
-            var convertedDirectory = GetConvertedDirectory(outputDirectory);
-            
+            _directory.CreateDirectory(extractedDirectory);
+
+            Console.WriteLine("Extracting textures...");
+            var timer = Stopwatch.StartNew();
             foreach (var material in materialsToFlatten)
             {
-                await FlattenMaterials(vpk, resize, extractedDirectory, convertedDirectory, material);
+                await ExtractTexture(vpk, material, extractedDirectory);
             }
+            timer.Stop();
+            Console.WriteLine($"Extracting textures took {timer.Elapsed.TotalSeconds} seconds.");
+
+            await FlattenTextures(extractedDirectory, extractedDirectory, resize);
         }
 
-        private async Task FlattenMaterials(string vpk, bool resize, string extractedDirectory, string convertedDirectory, string material)
+        private async Task ExtractTexture(string vpk, string materialToExtract, string extractedDirectory)
         {
-            // Create directories to hold textures
-            var materialDirectory = GetMaterialDirectory(material);
-            var extractTo = CreateMaterialSaveDirectory(extractedDirectory, materialDirectory);
-            var saveTo = CreateMaterialSaveDirectory(convertedDirectory, materialDirectory);
+            // material should be extracted to the parent directory of the material path
+            var extractTo = Path.Combine(extractedDirectory, GetMaterialDirectory(materialToExtract));
+            await _hlExtract.Run(vpk, extractTo, new List<string> { materialToExtract }, useFileMapping: true, allowVolatileAccess: true, useSilentMode: true);
+            //await _hlExtract.Run(vpk, extractedDirectory, materialsToFlatten, useFileMapping: true, allowVolatileAccess: true, useSilentMode: true);
+        }
 
-            // Extract .vtf files
-            await _hlExtract.Run(vpk, extractTo, material);
+        private async Task ExtractTextures(string vpk, IEnumerable<string> materialsToFlatten, string extractedDirectory)
+        {
+            await _hlExtract.Run(vpk, extractedDirectory, materialsToFlatten, useFileMapping: true, allowVolatileAccess: true, useSilentMode: true);
+        }
 
-            // Flatten .vtf files
-            var files = _directory.GetFiles(extractTo);
-            foreach (var vtf in files)
+        private async Task FlattenTextures(string directory, string saveTo, bool resize)
+        {
+            Console.WriteLine("Converting .vtf to .tga...");
+            var timer = Stopwatch.StartNew();
+            var tgaFiles = await ConvertFilesFromVTFtoTGA(directory);
+            timer.Stop();
+            Console.WriteLine($".vtf to .tga took {timer.Elapsed.TotalSeconds} seconds.");
+
+            Console.WriteLine("Flattening .tga files...");
+            timer.Restart();
+            foreach (var tga in tgaFiles)
             {
-                await FlattenVTF(vtf, saveTo, resize);
+                await CreateFlatTGA(tga, resize);
             }
+            timer.Stop();
+            Console.WriteLine($"Flattening .tga files took {timer.Elapsed.TotalSeconds} seconds.");
+
+            Console.WriteLine("Converting .tga to .vtf...");
+            timer.Restart();
+            await ConvertFilesFromTGAtoVTF(directory);
+            timer.Stop();
+            Console.WriteLine($".tga to .vtf took {timer.Elapsed.TotalSeconds} seconds.");
+
+            Console.WriteLine("Deleting .tga files...");
+            timer.Restart();
+            foreach (var tga in tgaFiles)
+            {
+                _file.Delete(tga);
+            }
+            timer.Stop();
+            Console.WriteLine($"Deleting .tga files took {timer.Elapsed.TotalSeconds} seconds.");
         }
 
-        private async Task FlattenVTF(string vtf, string saveTo, bool resize)
+        private async Task<IEnumerable<string>> ConvertFilesFromTGAtoVTF(string directory)
         {
-            // Convert to .tga
-            await _vtfCmd.Run(vtf, exportFormat: "tga");
-            var tga = Path.ChangeExtension(vtf, ".tga");
+            await _vtfCmd.Run(folder: Path.Combine(directory, "*.tga"), format: "BGR888", alphaFormat: "ABGR8888", flag: "MINMIP", version: "7.4");
+            return _directory.GetFiles(directory, "*.vtf", SearchOption.AllDirectories);
+        }
 
-            // Average the color
+        private async Task CreateFlatTGA(string tga, bool resize)
+        {
             _imageManipulator
                 .WithImage(tga)
-                .Resize(1, 1)
-                .Resize(1024, 1024)
-                .Composite(tga);
+                .Resize(1, 1);
+                //.Resize(1024, 1024);
+                //.Composite(tga);
 
-            // (Optional) Resize to 1x1
-            if (resize)
+            // TODO: determine how composite should work
+
+            if (!resize)
             {
-                _imageManipulator.Resize(1, 1);
+                _imageManipulator.Resize(1024, 1024);
             }
 
-            await _imageManipulator.Finish(Path.Combine(saveTo, tga));
+            // Overwrite original tga
+            await _imageManipulator.Save(tga);
+        }
 
-            // Convert to .vtf
-            await _vtfCmd.Run(tga, output: saveTo, format: "BGR888", alphaFormat: "ABGR8888", flag: "MINMIP", version: "7.4");
-
-            // Delete .tga
-            _file.Delete(tga);
+        private async Task<IEnumerable<string>> ConvertFilesFromVTFtoTGA(string directory)
+        {
+            var pattern = Path.Combine(directory, "*.vtf");
+            await _vtfCmd.Run(folder: pattern, exportFormat: "tga");
+            return _directory.GetFiles(directory, "*.tga", SearchOption.AllDirectories);
         }
 
         /// <summary>
@@ -88,14 +127,20 @@ namespace CleanTF2.Core
         /// </summary>
         /// <param name="workingDirectory"></param>
         /// <returns></returns>
-        private string GetExtractedDirectory(string workingDirectory) => Path.Combine(workingDirectory, "extracted");
+        private string GetExtractedDirectory(string workingDirectory)
+        {
+            return Path.Combine(workingDirectory, "extracted", "materials");
+        }
 
         /// <summary>
         /// Gets the directory to hold converted textures.
         /// </summary>
         /// <param name="workingDirectory"></param>
         /// <returns></returns>
-        private string GetConvertedDirectory(string workingDirectory) => Path.Combine(workingDirectory, "converted");
+        private string GetConvertedDirectory(string workingDirectory)
+        {
+            return Path.Combine(workingDirectory, "converted", "materials");
+        }
 
         /// <summary>
         /// Creates directory to save the given material(s) to.
@@ -111,8 +156,10 @@ namespace CleanTF2.Core
         }
 
         private string GetMaterialDirectory(string material)
-            => _file.IsDirectory(material)
-                ? material
-                : Path.GetDirectoryName(material)!;
+        {
+            return material.EndsWith(".vtf")
+                ? Path.GetDirectoryName(material)!
+                : material;
+        }
     }
 }

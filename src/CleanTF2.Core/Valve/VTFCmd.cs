@@ -14,18 +14,28 @@ namespace CleanTF2.Core.Valve
             _processRunner = processRunner;
         }
 
-        public async Task Run(string file, string? output = null, string? format = null, string? alphaFormat = null, string? exportFormat = null, string? flag = null, string? version = null)
+        public async Task Run(string? file = null, string? folder = null, string? output = null, string? format = null, string? alphaFormat = null, string? exportFormat = null, string? flag = null, string? version = null)
         {
-            var args = new List<string>
+            var args = new List<string>();
+            
+            if (!string.IsNullOrWhiteSpace(file))
             {
-                "-file", file
-            };
-
-            if (!string.IsNullOrWhiteSpace(output))
-            {
-                args.Add("-output");
-                args.Add(output);
+                args.Add("-file");
+                args.Add(file);
             }
+
+            if (!string.IsNullOrWhiteSpace(folder))
+            {
+                args.Add("-folder");
+                args.Add(folder);
+                args.Add("-recurse");
+            }
+
+            //if (!string.IsNullOrWhiteSpace(output))
+            //{
+            //    args.Add("-output");
+            //    args.Add(output);
+            //}
 
             if (!string.IsNullOrWhiteSpace(format))
             {
@@ -57,7 +67,8 @@ namespace CleanTF2.Core.Valve
                 args.Add(version);
             }
 
-            await _processRunner.Run("VTFCmd.exe", args);
+            // TODO: configure path to executable
+            await _processRunner.Run("vtfcmd.exe", args);
         }
     }
 }

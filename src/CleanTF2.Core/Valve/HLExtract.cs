@@ -14,14 +14,29 @@ namespace CleanTF2.Core.Valve
             _processRunner = processRunner;
         }
 
-        public async Task Run(string package, string extractDirectory, string pathToExtract, bool useFileMapping = false, bool allowVolatileAccess = false, bool useSilentMode = false)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="package">Package file to open.</param>
+        /// <param name="extractDirectory">Directory to extract content to (defaults to the package's directory).</param>
+        /// <param name="pathsToExtract">Paths to a file for folder in the package to extract.</param>
+        /// <param name="useFileMapping"></param>
+        /// <param name="allowVolatileAccess"></param>
+        /// <param name="useSilentMode"></param>
+        /// <returns></returns>
+        public async Task Run(string package, string extractDirectory, IEnumerable<string> pathsToExtract, bool useFileMapping = false, bool allowVolatileAccess = false, bool useSilentMode = false)
         {
             var args = new List<string>
             {
                 "-p", package,
-                "-d", extractDirectory,
-                "-e", pathToExtract,
+                "-d", extractDirectory
             };
+
+            foreach (var path in pathsToExtract)
+            {
+                args.Add("-e");
+                args.Add(path);
+            }
 
             if (useFileMapping)
             {
@@ -36,6 +51,7 @@ namespace CleanTF2.Core.Valve
                 args.Add("-s");
             }
 
+            // TODO: configure path to executable
             await _processRunner.Run("hlextract.exe", args);
         }
     }

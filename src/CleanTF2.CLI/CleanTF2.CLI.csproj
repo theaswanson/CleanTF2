@@ -16,4 +16,10 @@
     <ProjectReference Include="..\CleanTF2.Core\CleanTF2.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="flat.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

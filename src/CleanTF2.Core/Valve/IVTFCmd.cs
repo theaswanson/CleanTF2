@@ -2,6 +2,18 @@
 {
     public interface IVTFCmd
     {
-        Task Run(string file, string? output = null, string? format = null, string? alphaFormat = null, string? exportFormat = null, string? flag = null, string? version = null);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file">Input file path.</param>
+        /// <param name="folder">Input directory search string.</param>
+        /// <param name="output">Output directory.</param>
+        /// <param name="format">Ouput format to use on non-alpha textures.</param>
+        /// <param name="alphaFormat">Ouput format to use on alpha textures.</param>
+        /// <param name="exportFormat">Ouput format to use on alpha textures.</param>
+        /// <param name="flag">Output flags to set.</param>
+        /// <param name="version">Ouput version.</param>
+        /// <returns></returns>
+        Task Run(string? file = null, string? folder = null, string? output = null, string? format = null, string? alphaFormat = null, string? exportFormat = null, string? flag = null, string? version = null);
     }
 }

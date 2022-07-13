@@ -3,6 +3,5 @@
     public interface IFile
     {
         void Delete(string path);
-        bool IsDirectory(string path);
     }
 }

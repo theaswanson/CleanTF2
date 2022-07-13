@@ -28,7 +28,7 @@ namespace CleanTF2.Core
             return this;
         }
 
-        public async Task Finish(string saveTo)
+        public async Task Save(string saveTo)
         {
             await _image!.WriteAsync(saveTo);
             _image.Dispose();

@@ -1,7 +1,8 @@
 {
   "profiles": {
     "CleanTF2.CLI": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "flatten"
     }
   }
 }

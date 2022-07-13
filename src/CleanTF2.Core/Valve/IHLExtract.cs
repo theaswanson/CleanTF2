@@ -2,6 +2,6 @@
 {
     public interface IHLExtract
     {
-        Task Run(string package, string extractDirectory, string pathToExtract, bool useFileMapping = false, bool allowVolatileAccess = false, bool useSilentMode = false);
+        Task Run(string package, string extractDirectory, IEnumerable<string> pathToExtract, bool useFileMapping = false, bool allowVolatileAccess = false, bool useSilentMode = false);
     }
 }

@@ -54,7 +54,6 @@ namespace CleanTF2.Core.Tests
                     base.Setup();
                     _materialDirectory = "materials/brick";
                     _materialsToFlatten.Add(_materialDirectory);
-                    _file.Setup(f => f.IsDirectory(_materialDirectory)).Returns(true);
                 }
 
                 [Test]
@@ -86,7 +85,7 @@ namespace CleanTF2.Core.Tests
                     }
 
                     [Test]
-                    public async Task DoesNotThrowException()
+                    public void DoesNotThrowException()
                     {
                         Assert.DoesNotThrowAsync(async () => await Act());
                     }
@@ -147,7 +146,7 @@ namespace CleanTF2.Core.Tests
                         await Act();
 
                         var expectedSaveFile = Path.Combine(_outputDirectory, "converted", _materialDirectory, "wall.tga");
-                        _imageManipulator.Verify(im => im.Finish(Path.Combine(expectedSaveFile)));
+                        _imageManipulator.Verify(im => im.Save(Path.Combine(expectedSaveFile)));
                     }
 
                     [Test]

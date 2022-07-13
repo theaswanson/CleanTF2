@@ -3,7 +3,7 @@
     public interface IImageManipulator
     {
         IImageManipulator Composite(string secondImage);
-        Task Finish(string saveTo);
+        Task Save(string saveTo);
         IImageManipulator Resize(int width, int height, bool ignoreAspectRatio = true);
         IImageManipulator WithImage(string path);
     }
