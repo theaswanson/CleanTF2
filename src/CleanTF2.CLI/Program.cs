@@ -36,15 +36,32 @@ namespace CleanTF2.CLI
         static void RegisterServices(HostBuilderContext hostContext, IServiceCollection services)
         {
             _services = services;
+            RegisterUtilities();
+            RegisterLibraries();
+            RegisterCoreServices();
+        }
+
+        static void RegisterUtilities()
+        {
             _services
                 .AddTransient<IProcessRunner, ProcessRunner>()
                 .AddTransient<IFile, FileWrapper>()
                 .AddTransient<IDirectory, DirectoryWrapper>()
+                .AddTransient<IInterop, Interop>();
+        }
+
+        static void RegisterLibraries()
+        {
+            _services
                 .AddTransient<IHLExtract, HLExtract>()
-                .AddTransient<IVTFCmd, VTFCmd>()
+                .AddTransient<IVTFCmd, VTFCmd>();
+        }
+
+        static void RegisterCoreServices()
+        {
+            _services
                 .AddTransient<IImageManipulator, ImageManipulator>()
-                .AddTransient<IFlatTextureGenerator, FlatTextureGenerator>()
-                .AddTransient<FlattenCommand>();
+                .AddTransient<IFlatMaterialGenerator, FlatMaterialGenerator>();
         }
     }
 }

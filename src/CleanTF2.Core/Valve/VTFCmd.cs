@@ -14,7 +14,7 @@ namespace CleanTF2.Core.Valve
             _processRunner = processRunner;
         }
 
-        public async Task Run(string? file = null, string? folder = null, string? output = null, string? format = null, string? alphaFormat = null, string? exportFormat = null, string? flag = null, string? version = null)
+        public async Task Run(string? file = null, string? folder = null, string? format = null, string? alphaFormat = null, string? exportFormat = null, string? flag = null, string? version = null)
         {
             var args = new List<string>();
             
@@ -30,12 +30,6 @@ namespace CleanTF2.Core.Valve
                 args.Add(folder);
                 args.Add("-recurse");
             }
-
-            //if (!string.IsNullOrWhiteSpace(output))
-            //{
-            //    args.Add("-output");
-            //    args.Add(output);
-            //}
 
             if (!string.IsNullOrWhiteSpace(format))
             {

@@ -6,7 +6,7 @@ namespace CleanTF2.Core.Tests
 {
     public class TheFlatTextureGenerator
     {
-        private FlatTextureGenerator _flatTextureGenerator;
+        private FlatMaterialGenerator _flatTextureGenerator;
         private Mock<IFile> _file;
         private Mock<IDirectory> _directory;
         private Mock<IHLExtract> _hlExtract;
@@ -24,7 +24,7 @@ namespace CleanTF2.Core.Tests
             _imageManipulator.Setup(im => im.WithImage(It.IsAny<string>())).Returns(_imageManipulator.Object);
             _imageManipulator.Setup(im => im.Resize(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>())).Returns(_imageManipulator.Object);
             _imageManipulator.Setup(im => im.Composite(It.IsAny<string>())).Returns(_imageManipulator.Object);
-            _flatTextureGenerator = new FlatTextureGenerator(_file.Object, _directory.Object, _hlExtract.Object, _vtfCmd.Object, _imageManipulator.Object);
+            _flatTextureGenerator = new FlatMaterialGenerator(_file.Object, _directory.Object, _hlExtract.Object, _vtfCmd.Object, _imageManipulator.Object);
         }
 
         public class WhenGenerating : TheFlatTextureGenerator
