@@ -1,7 +1,8 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace CleanTF2.Core.Utilities
 {
+    [ExcludeFromCodeCoverage]
     public class FileWrapper : IFile
     {
         public void Delete(string path) => File.Delete(path);

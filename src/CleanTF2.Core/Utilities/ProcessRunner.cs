@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CleanTF2.Core.Utilities
 {
+    [ExcludeFromCodeCoverage]
     public class ProcessRunner : IProcessRunner
     {
         public async Task<int> Run(string fileName, IEnumerable<string> arguments)

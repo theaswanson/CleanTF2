@@ -1,5 +1,8 @@
-﻿namespace CleanTF2.Core.Utilities
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace CleanTF2.Core.Utilities
 {
+    [ExcludeFromCodeCoverage]
     public class DirectoryWrapper : IDirectory
     {
         public DirectoryInfo CreateDirectory(string path) => Directory.CreateDirectory(path);
