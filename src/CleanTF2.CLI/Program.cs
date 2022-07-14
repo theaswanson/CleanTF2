@@ -54,7 +54,8 @@ namespace CleanTF2.CLI
         {
             _services
                 .AddTransient<IHLExtract, HLExtract>()
-                .AddTransient<IVTFCmd, VTFCmd>();
+                .AddTransient<IVTFCmd, VTFCmd>()
+                .AddTransient<IVPK, VPK>();
         }
 
         static void RegisterCoreServices()

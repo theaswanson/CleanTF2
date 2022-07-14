@@ -5,5 +5,6 @@
         void Delete(string path);
         bool Exists(string path);
         Task<string[]> ReadAllLinesAsync(string path);
+        Task WriteAllLinesAsync(string path, IEnumerable<string> contents);
     }
 }
