@@ -113,7 +113,7 @@ namespace CleanTF2.CLI.Commands
             {
                 try
                 {
-                    await _flatTextureGenerator.Generate(package, materials, saveTo, resize: true, (string status) => context.Status(status));
+                    await _flatTextureGenerator.Generate(package, materials, saveTo, upscale: true, (string status) => context.Status(status));
                 }
                 catch (Exception ex)
                 {
