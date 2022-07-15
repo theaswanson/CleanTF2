@@ -42,14 +42,14 @@ namespace CleanTF2.Core
         /// Converts all .vtf files in the given directory to flattened materials.
         /// </summary>
         /// <param name="directory">Directory containing materials to be converted.</param>
-        /// <param name="resize">If true, resizes the flattened material to 1024x1024.</param>
+        /// <param name="upscale">If true, resizes the flattened material to 1024x1024.</param>
         /// <returns></returns>
-        private async Task FlattenMaterials(string directory, bool resize, Action<string> setCurrentStatus)
+        private async Task FlattenMaterials(string directory, bool upscale, Action<string> setCurrentStatus)
         {
             setCurrentStatus($"Converting materials to .tga files");
             var tgaFiles = await _materialConverter.ConvertFromVTFtoTGA(directory);
 
-            await FlattenImages(resize, setCurrentStatus, tgaFiles);
+            await FlattenImages(upscale, setCurrentStatus, tgaFiles);
 
             setCurrentStatus($"Converting .tga files to materials");
             await _materialConverter.ConvertFromTGAtoVTF(directory);
