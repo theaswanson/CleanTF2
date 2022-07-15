@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using CleanTF2.Core;
+using CleanTF2.Core.Materials;
 using CleanTF2.Core.Utilities;
 using CleanTF2.Core.Valve;
 using Spectre.Console;

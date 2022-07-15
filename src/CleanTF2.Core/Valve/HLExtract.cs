@@ -52,7 +52,7 @@ namespace CleanTF2.Core.Valve
             }
 
             // TODO: configure path to executable
-            await _processRunner.Run("hlextract.exe", args);
+            await _processRunner.Run(Path.Combine("lib", "hlextract.exe"), args);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace CleanTF2.Core.Tests
+﻿using CleanTF2.Core.Materials;
+
+namespace CleanTF2.Core.Tests
 {
     public class TheMaterialFlattener
     {

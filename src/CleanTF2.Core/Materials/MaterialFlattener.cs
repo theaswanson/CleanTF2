@@ -1,4 +1,4 @@
-﻿namespace CleanTF2.Core
+﻿namespace CleanTF2.Core.Materials
 {
     public class MaterialFlattener : IMaterialFlattener
     {
@@ -8,7 +8,7 @@
         {
             _imageManipulator = imageManipulator;
         }
-        
+
         /// <inheritdoc/>
         public async Task FlattenMaterial(string pathToImage, bool upscale)
         {

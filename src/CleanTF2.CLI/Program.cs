@@ -1,5 +1,5 @@
 ﻿using CleanTF2.CLI.Commands;
-using CleanTF2.Core;
+using CleanTF2.Core.Materials;
 using CleanTF2.Core.Utilities;
 using CleanTF2.Core.Valve;
 using Microsoft.Extensions.DependencyInjection;

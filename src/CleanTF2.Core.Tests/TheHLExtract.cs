@@ -35,7 +35,7 @@ namespace CleanTF2.Core.Tests
             {
                 await _hlextract.Run(_package, _extractDirectory, _pathsToExtract);
                 _processRunner.Verify(p => p.Run(
-                    "hlextract.exe",
+                    Path.Combine("lib", "hlextract.exe"),
                     It.Is<IEnumerable<string>>(args => args.IsDeepEqual(new List<string> { "-p", _package, "-d", _extractDirectory, "-e", "dir/to/extract" }))
                 ));
             }

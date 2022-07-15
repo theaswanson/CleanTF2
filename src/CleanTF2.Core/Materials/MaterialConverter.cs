@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CleanTF2.Core.Utilities;
 using CleanTF2.Core.Valve;
 
-namespace CleanTF2.Core
+namespace CleanTF2.Core.Materials
 {
     public class MaterialConverter : IMaterialConverter
     {

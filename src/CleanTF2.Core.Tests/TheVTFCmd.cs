@@ -22,7 +22,7 @@ namespace CleanTF2.Core.Tests
             var folder = "path/to/folder";
             await _vtfCmd.Run(folder: folder);
             _processRunner.Verify(p => p.Run(
-                "vtfcmd.exe",
+                Path.Combine("lib", "vtfcmd.exe"),
                 It.IsAny<IEnumerable<string>>()
             ));
         }

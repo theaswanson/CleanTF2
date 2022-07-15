@@ -5,12 +5,24 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
+    <Authors>crisp2020</Authors>
+    <RepositoryUrl>https://github.com/theaswanson/CleanTF2</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <Description>Generate flat textures for Team Fortress 2.</Description>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <DebugSymbols>False</DebugSymbols>
     <DebugType>None</DebugType>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
@@ -22,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="DevIL.dll">
+    <None Update="lib\DevIL.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="flat.txt">
@@ -31,28 +43,28 @@
     <None Update="flat_hl2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="HLExtract.exe">
+    <None Update="lib\HLExtract.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="HLLib.dll">
+    <None Update="lib\HLLib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="license_HLExtract.txt">
+    <None Update="lib\license_HLExtract.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="license_HLLib.txt">
+    <None Update="lib\license_HLLib.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="license_VTFCmd.txt">
+    <None Update="lib\license_VTFCmd.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="license_VTFLib.txt">
+    <None Update="lib\license_VTFLib.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="VTFCmd.exe">
+    <None Update="lib\VTFCmd.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="VTFLib.dll">
+    <None Update="lib\VTFLib.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -1,6 +1,6 @@
 ﻿using CleanTF2.Core.Utilities;
 
-namespace CleanTF2.Core
+namespace CleanTF2.Core.Materials
 {
     public class FlatMaterialGenerator : IFlatMaterialGenerator
     {

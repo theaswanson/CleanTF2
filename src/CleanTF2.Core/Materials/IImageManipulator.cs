@@ -1,4 +1,4 @@
-﻿namespace CleanTF2.Core
+﻿namespace CleanTF2.Core.Materials
 {
     public interface IImageManipulator
     {

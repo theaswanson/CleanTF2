@@ -62,7 +62,7 @@ namespace CleanTF2.Core.Valve
             }
 
             // TODO: configure path to executable
-            await _processRunner.Run("vtfcmd.exe", args);
+            await _processRunner.Run(Path.Combine("lib", "vtfcmd.exe"), args);
         }
     }
 }
