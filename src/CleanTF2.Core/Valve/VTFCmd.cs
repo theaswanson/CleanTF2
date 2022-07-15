@@ -17,7 +17,7 @@ namespace CleanTF2.Core.Valve
         public async Task Run(string? file = null, string? folder = null, string? format = null, string? alphaFormat = null, string? exportFormat = null, string? flag = null, string? version = null)
         {
             var args = new List<string>();
-            
+
             if (!string.IsNullOrWhiteSpace(file))
             {
                 args.Add("-file");

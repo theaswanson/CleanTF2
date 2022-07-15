@@ -1,7 +1,9 @@
-﻿using ImageMagick;
+﻿using System.Diagnostics.CodeAnalysis;
+using ImageMagick;
 
 namespace CleanTF2.Core
 {
+    [ExcludeFromCodeCoverage]
     public class ImageManipulator : IDisposable, IImageManipulator
     {
         private MagickImage? _image;

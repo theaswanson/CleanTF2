@@ -1,7 +1,6 @@
 ﻿using CleanTF2.Core.Utilities;
 using CleanTF2.Core.Valve;
 using DeepEqual.Syntax;
-using Moq;
 
 namespace CleanTF2.Core.Tests
 {

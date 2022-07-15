@@ -1,5 +1,4 @@
 ﻿using CleanTF2.Core.Utilities;
-using Moq;
 
 namespace CleanTF2.Core.Tests
 {
