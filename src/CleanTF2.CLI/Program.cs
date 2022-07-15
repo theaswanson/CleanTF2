@@ -62,6 +62,9 @@ namespace CleanTF2.CLI
         {
             _services
                 .AddTransient<IImageManipulator, ImageManipulator>()
+                .AddTransient<IMaterialConverter, MaterialConverter>()
+                .AddTransient<IMaterialExtractor, MaterialExtractor>()
+                .AddTransient<IMaterialFlattener, MaterialFlattener>()
                 .AddTransient<IFlatMaterialGenerator, FlatMaterialGenerator>();
         }
     }
