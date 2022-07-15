@@ -117,15 +117,7 @@ namespace CleanTF2.CLI.Commands
         {
             await AnsiConsole.Status().StartAsync("Starting", async context =>
             {
-                try
-                {
-                    await _flatTextureGenerator.Generate(package, materials, saveTo, upscale, (string status) => context.Status(status));
-                }
-                catch (Exception ex)
-                {
-                    AnsiConsole.WriteLine("There was a problem generating flat textures. Here are the details:");
-                    AnsiConsole.WriteException(ex);
-                }
+                await _flatTextureGenerator.Generate(package, materials, saveTo, upscale, (string status) => context.Status(status));
             });
         }
 
