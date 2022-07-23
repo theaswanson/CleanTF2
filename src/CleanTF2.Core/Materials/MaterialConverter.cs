@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CleanTF2.Core.Utilities;
-using CleanTF2.Core.Valve;
+using CleanTF2.Core.Libraries;
 
 namespace CleanTF2.Core.Materials
 {

@@ -2,7 +2,7 @@
 using CleanTF2.Core;
 using CleanTF2.Core.Materials;
 using CleanTF2.Core.Utilities;
-using CleanTF2.Core.Valve;
+using CleanTF2.Core.Libraries;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console.Cli;

@@ -1,4 +1,4 @@
-﻿namespace CleanTF2.Core.Valve
+﻿namespace CleanTF2.Core.Libraries
 {
     public interface IHLExtract
     {

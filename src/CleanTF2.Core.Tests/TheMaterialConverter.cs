@@ -1,6 +1,6 @@
 ﻿using CleanTF2.Core.Materials;
 using CleanTF2.Core.Utilities;
-using CleanTF2.Core.Valve;
+using CleanTF2.Core.Libraries;
 
 namespace CleanTF2.Core.Tests
 {

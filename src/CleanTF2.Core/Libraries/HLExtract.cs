@@ -1,6 +1,6 @@
 ﻿using CleanTF2.Core.Utilities;
 
-namespace CleanTF2.Core.Valve
+namespace CleanTF2.Core.Libraries
 {
     /// <summary>
     /// <seealso href="https://developer.valvesoftware.com/wiki/HLLib"></seealso> 
