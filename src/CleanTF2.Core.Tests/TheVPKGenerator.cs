@@ -41,9 +41,17 @@ namespace CleanTF2.Core.Tests
         }
 
         [Test]
-        public async Task ReturnsGeneratedVPKs()
+        public async Task WhenMultiChunk_ReturnsGeneratedVPKs()
         {
             _directory.Setup(d => d.GetFiles(Path.GetDirectoryName(_directoryToPack), "here_*.vpk", SearchOption.TopDirectoryOnly)).Returns(new string[] { "here.vpk" });
+            var vpks = await _vpkGenerator.Generate(_tf2Directory, _directoryToPack, true);
+            vpks.ShouldDeepEqual(new List<string> { "here.vpk" });
+        }
+
+        [Test]
+        public async Task WithoutMultiChunk_ReturnsGeneratedVPK()
+        {
+            _directory.Setup(d => d.GetFiles(Path.GetDirectoryName(_directoryToPack), "here.vpk", SearchOption.TopDirectoryOnly)).Returns(new string[] { "here.vpk" });
             var vpks = await _vpkGenerator.Generate(_tf2Directory, _directoryToPack, default);
             vpks.ShouldDeepEqual(new List<string> { "here.vpk" });
         }

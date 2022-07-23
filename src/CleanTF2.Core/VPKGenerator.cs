@@ -23,7 +23,11 @@ namespace CleanTF2.Core
             // Create VPKs (generated next to the given directory)
             await _vpk.Run(tf2Directory, directoryToPack, produceMultiChunkVPK: multiChunk);
 
-            var pattern = $"{Path.GetFileName(directoryToPack)}_*.vpk";
+            var vpkFileName = Path.GetFileName(directoryToPack);
+            var pattern = multiChunk
+                ? $"{vpkFileName}_*.vpk"
+                : $"{vpkFileName}.vpk";
+
             return _directory.GetFiles(Path.GetDirectoryName(directoryToPack), pattern, SearchOption.TopDirectoryOnly);
         }
 
