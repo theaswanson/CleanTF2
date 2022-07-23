@@ -30,6 +30,7 @@ namespace CleanTF2.CLI
             app.Configure(config =>
             {
                 config.AddCommand<FlattenCommand>("flatten");
+                config.AddCommand<PackCommand>("pack");
             });
             return app;
         }
