@@ -2,7 +2,6 @@
 using CleanTF2.Core;
 using CleanTF2.Core.Materials;
 using CleanTF2.Core.Utilities;
-using CleanTF2.Core.Libraries;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
