@@ -1,4 +1,5 @@
 ﻿using CleanTF2.CLI.Commands;
+using CleanTF2.Core;
 using CleanTF2.Core.Materials;
 using CleanTF2.Core.Utilities;
 using CleanTF2.Core.Valve;
@@ -65,7 +66,8 @@ namespace CleanTF2.CLI
                 .AddTransient<IMaterialConverter, MaterialConverter>()
                 .AddTransient<IMaterialExtractor, MaterialExtractor>()
                 .AddTransient<IMaterialFlattener, MaterialFlattener>()
-                .AddTransient<IFlatMaterialGenerator, FlatMaterialGenerator>();
+                .AddTransient<IFlatMaterialGenerator, FlatMaterialGenerator>()
+                .AddTransient<IVPKGenerator, VPKGenerator>();
         }
     }
 }

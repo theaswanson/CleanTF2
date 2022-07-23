@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using CleanTF2.Core;
 using CleanTF2.Core.Materials;
 using CleanTF2.Core.Utilities;
 using CleanTF2.Core.Valve;
@@ -13,20 +14,20 @@ namespace CleanTF2.CLI.Commands
         private readonly IFile _file;
         private readonly IDirectory _directory;
         private readonly IInterop _interop;
-        private readonly IVPK _vpk;
+        private readonly IVPKGenerator _vpkGenerator;
 
         public FlattenCommand(
             IFlatMaterialGenerator flatTextureGenerator,
             IFile file,
             IDirectory directory,
             IInterop interop,
-            IVPK vpk)
+            IVPKGenerator vpkGenerator)
         {
             _flatTextureGenerator = flatTextureGenerator;
             _file = file;
             _directory = directory;
             _interop = interop;
-            _vpk = vpk;
+            _vpkGenerator = vpkGenerator;
         }
 
         public sealed class Settings : CommandSettings
@@ -62,8 +63,14 @@ namespace CleanTF2.CLI.Commands
             // Consolidate all textures
             AnsiConsole.WriteLine("Preparing textures...");
             var saveMaterialsTo = Path.Combine(_directory.GetCurrentDirectory(), "flat-textures");
-            _directory.CopyDirectory(tf2MaterialsSaveDirectory, saveMaterialsTo, recursive: true, overwrite: true);
-            _directory.CopyDirectory(hl2MaterialsSaveDirectory, saveMaterialsTo, recursive: true, overwrite: true);
+            if (_directory.Exists(tf2MaterialsSaveDirectory))
+            {
+                _directory.CopyDirectory(tf2MaterialsSaveDirectory, saveMaterialsTo, recursive: true, overwrite: true);
+            }
+            if (_directory.Exists(hl2MaterialsSaveDirectory))
+            {
+                _directory.CopyDirectory(hl2MaterialsSaveDirectory, saveMaterialsTo, recursive: true, overwrite: true);
+            }
 
             // Delete temp directory of textures
             AnsiConsole.WriteLine("Removing temp textures...");
@@ -71,8 +78,9 @@ namespace CleanTF2.CLI.Commands
 
             if (settings.OutputType == 1)
             {
-                // Package textures into .vpk (optional)
-                var vpks = await GenerateVPKs(settings.TF2Directory, saveMaterialsTo);
+                // Package textures into .vpk
+                AnsiConsole.WriteLine("Generating .vpk files...");
+                var vpks = await _vpkGenerator.Generate(settings.TF2Directory, saveMaterialsTo, multiChunk: true);
 
                 AnsiConsole.WriteLine("Finished!");
                 foreach (var vpk in vpks)
@@ -147,24 +155,6 @@ namespace CleanTF2.CLI.Commands
         private async Task<IEnumerable<string>> GetHL2MaterialList()
         {
             return await _file.ReadAllLinesAsync("flat_hl2.txt");
-        }
-
-        private async Task<IEnumerable<string>> GenerateVPKs(string tf2Directory, string directoryToPack)
-        {
-            AnsiConsole.WriteLine("Generating .vpk files...");
-
-            // Create README
-            await _file.WriteAllLinesAsync(Path.Combine(directoryToPack, "README.txt"), new List<string>
-            {
-                "Created by CleanTF2",
-                "https://github.com/theaswanson/CleanTF2"
-            });
-
-            // Create VPKs (generated next to the given directory)
-            await _vpk.Run(tf2Directory, directoryToPack, produceMultiChunkVPK: true);
-
-            var pattern = $"{Path.GetFileName(directoryToPack)}_*.vpk";
-            return _directory.GetFiles(Path.GetDirectoryName(directoryToPack), pattern, SearchOption.TopDirectoryOnly);
         }
 
         private string DefaultTF2Directory() => @"C:\Program Files (x86)\Steam\steamapps\common\Team Fortress 2";
