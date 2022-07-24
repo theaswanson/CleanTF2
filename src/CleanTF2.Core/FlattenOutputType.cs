@@ -1,6 +1,6 @@
-﻿namespace CleanTF2.CLI
+﻿namespace CleanTF2.Core
 {
-    public enum OutputType
+    public enum FlattenOutputType
     {
         SingleVPK,
         MultiChunkVPK,

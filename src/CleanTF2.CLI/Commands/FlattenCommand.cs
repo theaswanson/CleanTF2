@@ -1,26 +1,27 @@
 ﻿using System.ComponentModel;
 using CleanTF2.Core;
-using CleanTF2.Core.Materials;
 using CleanTF2.Core.Utilities;
-using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace CleanTF2.CLI.Commands
 {
     internal sealed class FlattenCommand : AsyncCommand<FlattenCommand.Settings>
     {
-        private readonly IFlattenTexturesService _flattenTexturesService;
+        private readonly IFlattenService _flattenService;
         private readonly IDirectory _directory;
         private readonly IInterop _interop;
+        private readonly Defaults _defaults;
 
         public FlattenCommand(
-            IFlattenTexturesService flattenTexturesService,
+            IFlattenService flattenService,
             IDirectory directory,
-            IInterop interop)
+            IInterop interop,
+            Defaults defaults)
         {
-            _flattenTexturesService = flattenTexturesService;
+            _flattenService = flattenService;
             _directory = directory;
             _interop = interop;
+            _defaults = defaults;
         }
 
         public sealed class Settings : CommandSettings
@@ -44,12 +45,12 @@ namespace CleanTF2.CLI.Commands
             ValidateOS();
             ValidateTF2Directory(settings);
 
-            var outputType = OutputType.MultiChunkVPK;
+            var outputType = FlattenOutputType.MultiChunkVPK;
             if (settings.OutputType == 2)
             {
-                outputType = OutputType.TextureFiles;
+                outputType = FlattenOutputType.TextureFiles;
             }
-            await _flattenTexturesService.Flatten(settings.TF2Directory, settings.Upscale, outputType);
+            await _flattenService.Flatten(settings.TF2Directory, settings.Upscale, outputType);
 
             return 0;
         }
@@ -66,7 +67,7 @@ namespace CleanTF2.CLI.Commands
         {
             if (string.IsNullOrWhiteSpace(settings.TF2Directory))
             {
-                settings.TF2Directory = DefaultTF2Directory();
+                settings.TF2Directory = _defaults.TF2Directory();
             }
 
             if (!_directory.Exists(settings.TF2Directory))
@@ -74,7 +75,5 @@ namespace CleanTF2.CLI.Commands
                 throw new DirectoryNotFoundException("The given TF2 directory could not be found. Check the path and try again.");
             }
         }
-
-        private string DefaultTF2Directory() => @"C:\Program Files (x86)\Steam\steamapps\common\Team Fortress 2";
     }
 }
