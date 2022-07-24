@@ -9,24 +9,18 @@ namespace CleanTF2.CLI.Commands
 {
     internal sealed class FlattenCommand : AsyncCommand<FlattenCommand.Settings>
     {
-        private readonly IFlatMaterialGenerator _flatTextureGenerator;
-        private readonly IFile _file;
+        private readonly IFlattenTexturesService _flattenTexturesService;
         private readonly IDirectory _directory;
         private readonly IInterop _interop;
-        private readonly IVPKGenerator _vpkGenerator;
 
         public FlattenCommand(
-            IFlatMaterialGenerator flatTextureGenerator,
-            IFile file,
+            IFlattenTexturesService flattenTexturesService,
             IDirectory directory,
-            IInterop interop,
-            IVPKGenerator vpkGenerator)
+            IInterop interop)
         {
-            _flatTextureGenerator = flatTextureGenerator;
-            _file = file;
+            _flattenTexturesService = flattenTexturesService;
             _directory = directory;
             _interop = interop;
-            _vpkGenerator = vpkGenerator;
         }
 
         public sealed class Settings : CommandSettings
@@ -50,51 +44,12 @@ namespace CleanTF2.CLI.Commands
             ValidateOS();
             ValidateTF2Directory(settings);
 
-            // Determine directory paths
-            var tempSaveDirectory = Path.Combine(_directory.GetCurrentDirectory(), "flattened");
-            var tf2MaterialsSaveDirectory = Path.Combine(tempSaveDirectory, "tf2");
-            var hl2MaterialsSaveDirectory = Path.Combine(tempSaveDirectory, "hl2");
-
-            // Flatten textures
-            await GenerateFlatTF2Textures(settings.TF2Directory, tf2MaterialsSaveDirectory, settings.Upscale);
-            await GenerateFlatHL2Textures(settings.TF2Directory, hl2MaterialsSaveDirectory, settings.Upscale);
-
-            // Consolidate all textures
-            AnsiConsole.WriteLine("Preparing textures...");
-            var saveMaterialsTo = Path.Combine(_directory.GetCurrentDirectory(), "flat-textures");
-            if (_directory.Exists(tf2MaterialsSaveDirectory))
+            var outputType = OutputType.MultiChunkVPK;
+            if (settings.OutputType == 2)
             {
-                _directory.CopyDirectory(tf2MaterialsSaveDirectory, saveMaterialsTo, recursive: true, overwrite: true);
+                outputType = OutputType.TextureFiles;
             }
-            if (_directory.Exists(hl2MaterialsSaveDirectory))
-            {
-                _directory.CopyDirectory(hl2MaterialsSaveDirectory, saveMaterialsTo, recursive: true, overwrite: true);
-            }
-
-            // Delete temp directory of textures
-            AnsiConsole.WriteLine("Removing temp textures...");
-            _directory.Delete(tempSaveDirectory, recursive: true);
-
-            if (settings.OutputType == 1)
-            {
-                // Package textures into .vpk
-                AnsiConsole.WriteLine("Generating .vpk files...");
-                var vpks = await _vpkGenerator.Generate(settings.TF2Directory, saveMaterialsTo, multiChunk: true);
-
-                AnsiConsole.WriteLine("Finished!");
-                foreach (var vpk in vpks)
-                {
-                    AnsiConsole.WriteLine(vpk);
-                }
-
-                _directory.Delete(saveMaterialsTo, recursive: true);
-            }
-            else
-            {
-                var materialsDirectory = Path.Combine(saveMaterialsTo, "materials");
-                AnsiConsole.WriteLine("Finished!");
-                AnsiConsole.WriteLine(materialsDirectory);
-            }
+            await _flattenTexturesService.Flatten(settings.TF2Directory, settings.Upscale, outputType);
 
             return 0;
         }
@@ -118,42 +73,6 @@ namespace CleanTF2.CLI.Commands
             {
                 throw new DirectoryNotFoundException("The given TF2 directory could not be found. Check the path and try again.");
             }
-        }
-
-        private async Task GenerateFlatTextures(string package, IEnumerable<string> materials, string saveTo, bool upscale)
-        {
-            await AnsiConsole.Status().StartAsync("Starting", async context =>
-            {
-                await _flatTextureGenerator.Generate(package, materials, saveTo, upscale, (string status) => context.Status(status));
-            });
-        }
-
-        private async Task GenerateFlatTF2Textures(string tf2Directory, string saveTo, bool upscale)
-        {
-            var tf2TextureFile = Path.Combine(tf2Directory, "tf", "tf2_textures_dir.vpk");
-            var tf2Materials = await GetTF2MaterialList();
-
-            AnsiConsole.WriteLine("Generating flat TF2 textures...");
-            await GenerateFlatTextures(tf2TextureFile, tf2Materials, saveTo, upscale);
-        }
-
-        private async Task<IEnumerable<string>> GetTF2MaterialList()
-        {
-            return await _file.ReadAllLinesAsync("flat.txt");
-        }
-
-        private async Task GenerateFlatHL2Textures(string tf2Directory, string saveTo, bool upscale)
-        {
-            var hl2TextureFile = Path.Combine(tf2Directory, "hl2", "hl2_textures_dir.vpk");
-            var hl2Materials = await GetHL2MaterialList();
-
-            AnsiConsole.WriteLine("Generating flat HL2 textures...");
-            await GenerateFlatTextures(hl2TextureFile, hl2Materials, saveTo, upscale);
-        }
-
-        private async Task<IEnumerable<string>> GetHL2MaterialList()
-        {
-            return await _file.ReadAllLinesAsync("flat_hl2.txt");
         }
 
         private string DefaultTF2Directory() => @"C:\Program Files (x86)\Steam\steamapps\common\Team Fortress 2";

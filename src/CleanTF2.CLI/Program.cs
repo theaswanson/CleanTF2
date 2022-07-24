@@ -68,7 +68,8 @@ namespace CleanTF2.CLI
                 .AddTransient<IMaterialExtractor, MaterialExtractor>()
                 .AddTransient<IMaterialFlattener, MaterialFlattener>()
                 .AddTransient<IFlatMaterialGenerator, FlatMaterialGenerator>()
-                .AddTransient<IVPKGenerator, VPKGenerator>();
+                .AddTransient<IVPKGenerator, VPKGenerator>()
+                .AddTransient<IFlattenTexturesService, FlattenTexturesService>();
         }
     }
 }
