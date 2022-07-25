@@ -30,7 +30,7 @@ namespace CleanTF2.CLI.Commands
             [CommandOption("-d")]
             public string TF2Directory { get; set; }
 
-            [Description("1: .vpk files (default), 2: material files")]
+            [Description("1: single .vpk file (default), 2: split .vpk files, 3: material files")]
             [CommandOption("--output-type")]
             [DefaultValue(1)]
             public int OutputType { get; set; }
@@ -45,14 +45,21 @@ namespace CleanTF2.CLI.Commands
             ValidateOS();
             ValidateTF2Directory(settings);
 
-            var outputType = FlattenOutputType.MultiChunkVPK;
-            if (settings.OutputType == 2)
-            {
-                outputType = FlattenOutputType.TextureFiles;
-            }
+            var outputType = GetOutputType(settings.OutputType);
             await _flattenService.Flatten(settings.TF2Directory, settings.Upscale, outputType);
 
             return 0;
+        }
+
+        private static FlattenOutputType GetOutputType(int outputType)
+        {
+            return outputType switch
+            {
+                1 => FlattenOutputType.SingleVPK,
+                2 => FlattenOutputType.MultiChunkVPK,
+                3 => FlattenOutputType.TextureFiles,
+                _ => throw new ArgumentOutOfRangeException(nameof(outputType), "Invalid output type."),
+            };
         }
 
         private void ValidateOS()
