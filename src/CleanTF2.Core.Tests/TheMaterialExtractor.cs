@@ -57,8 +57,6 @@ namespace CleanTF2.Core.Tests
                 base.Setup();
                 _materials = new List<string>
                 {
-                    //"materials\\concrete",
-                    //"materials\\wall",
                     "materials\\harvest\\harvest_grass.vtf"
                 };
             }
