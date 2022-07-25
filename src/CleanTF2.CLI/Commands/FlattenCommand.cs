@@ -30,8 +30,13 @@ namespace CleanTF2.CLI.Commands
             [CommandOption("-d")]
             public string TF2Directory { get; set; }
 
+            [Description("1: flatten TF2 and HL2 textures (default), 2: only flatten TF2 textures, 3: only flatten HL2 textures")]
+            [CommandOption("-m|--mode")]
+            [DefaultValue(1)]
+            public int Mode { get; set; }
+
             [Description("1: single .vpk file (default), 2: split .vpk files, 3: material files")]
-            [CommandOption("--output-type")]
+            [CommandOption("-o|--output-type")]
             [DefaultValue(1)]
             public int OutputType { get; set; }
 
@@ -46,9 +51,21 @@ namespace CleanTF2.CLI.Commands
             ValidateTF2Directory(settings);
 
             var outputType = GetOutputType(settings.OutputType);
-            await _flattenService.Flatten(settings.TF2Directory, settings.Upscale, outputType);
+            var mode = GetMode(settings.Mode);
+            await _flattenService.Flatten(settings.TF2Directory, settings.Upscale, outputType, mode);
 
             return 0;
+        }
+
+        private static FlattenMode GetMode(int mode)
+        {
+            return mode switch
+            {
+                1 => FlattenMode.All,
+                2 => FlattenMode.TF2,
+                3 => FlattenMode.HL2,
+                _ => throw new ArgumentOutOfRangeException(nameof(mode), "Invalid argument."),
+            };
         }
 
         private static FlattenOutputType GetOutputType(int outputType)
@@ -58,7 +75,7 @@ namespace CleanTF2.CLI.Commands
                 1 => FlattenOutputType.SingleVPK,
                 2 => FlattenOutputType.MultiChunkVPK,
                 3 => FlattenOutputType.TextureFiles,
-                _ => throw new ArgumentOutOfRangeException(nameof(outputType), "Invalid output type."),
+                _ => throw new ArgumentOutOfRangeException(nameof(outputType), "Invalid argument."),
             };
         }
 

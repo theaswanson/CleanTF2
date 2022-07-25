@@ -53,8 +53,6 @@ namespace CleanTF2.Core
                     var materialsDirectory = Path.Combine(flattenedMaterialsDirectory, "materials");
                     generatedFiles = new List<string> { materialsDirectory };
                     break;
-                default:
-                    break;
             }
 
             return generatedFiles;

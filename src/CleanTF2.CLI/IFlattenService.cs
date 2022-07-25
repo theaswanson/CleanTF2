@@ -13,7 +13,8 @@ namespace CleanTF2.CLI
         /// <param name="tf2Directory">Path to the Team Fortress 2 folder.</param>
         /// <param name="upscaleTextures"></param>
         /// <param name="outputType"></param>
+        /// <param name="mode"></param>
         /// <returns></returns>
-        Task Flatten(string tf2Directory, bool upscaleTextures, FlattenOutputType outputType);
+        Task Flatten(string tf2Directory, bool upscaleTextures, FlattenOutputType outputType, FlattenMode mode);
     }
 }

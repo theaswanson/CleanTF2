@@ -21,7 +21,7 @@ namespace CleanTF2.CLI
             _defaults = defaults;
         }
 
-        public async Task Flatten(string tf2Directory, bool upscaleTextures, FlattenOutputType outputType)
+        public async Task Flatten(string tf2Directory, bool upscaleTextures, FlattenOutputType outputType, FlattenMode mode)
         {
             // Determine working directories
             var currentDirectory = _directory.GetCurrentDirectory();
@@ -29,23 +29,32 @@ namespace CleanTF2.CLI
             var tf2WorkingDirectory = Path.Combine(workingDirectory, "tf2");
             var hl2WorkingDirectory = Path.Combine(workingDirectory, "hl2");
 
-            // Flatten textures
-            AnsiConsole.WriteLine("Flattening TF2 textures...");
-            await AnsiConsole.Status().StartAsync("Starting", async context =>
-            {
-                await _flattenTexturesService.GenerateFlatTextures(_defaults.TF2TexturesPackage(tf2Directory), await _defaults.TF2MaterialList(), tf2WorkingDirectory, upscaleTextures, (string status) => context.Status(status));
-            });
 
-            AnsiConsole.WriteLine("Flattening HL2 textures...");
-            await AnsiConsole.Status().StartAsync("Starting", async context =>
+            // Flatten textures
+            IEnumerable<string> flattenedTextureDirectories;
+            switch (mode)
             {
-                await _flattenTexturesService.GenerateFlatTextures(_defaults.HL2TexturesPackage(tf2Directory), await _defaults.HL2MaterialList(), hl2WorkingDirectory, upscaleTextures, (string status) => context.Status(status));
-            });
+                case FlattenMode.All:
+                    await FlattenTF2Textures(tf2Directory, upscaleTextures, tf2WorkingDirectory);
+                    await FlattenHL2Textures(tf2Directory, upscaleTextures, hl2WorkingDirectory);
+                    flattenedTextureDirectories = new List<string> { tf2WorkingDirectory, hl2WorkingDirectory };
+                    break;
+                case FlattenMode.TF2:
+                    await FlattenTF2Textures(tf2Directory, upscaleTextures, tf2WorkingDirectory);
+                    flattenedTextureDirectories = new List<string> { tf2WorkingDirectory };
+                    break;
+                case FlattenMode.HL2:
+                    await FlattenHL2Textures(tf2Directory, upscaleTextures, hl2WorkingDirectory);
+                    flattenedTextureDirectories = new List<string> { hl2WorkingDirectory };
+                    break;
+                default:
+                    throw new Exception("Unknown mode.");
+            }
 
             // Move textures together to prepare for output
             AnsiConsole.WriteLine("Consolidating textures...");
             var consolidateTo = Path.Combine(currentDirectory, "flat-textures");
-            _flattenTexturesService.ConsolidateTextures(consolidateTo, new List<string> { tf2WorkingDirectory, hl2WorkingDirectory });
+            _flattenTexturesService.ConsolidateTextures(consolidateTo, flattenedTextureDirectories);
             _directory.Delete(workingDirectory, recursive: true);
 
             // Create output
@@ -67,6 +76,24 @@ namespace CleanTF2.CLI
                     AnsiConsole.WriteLine(file);
                 }
             }
+        }
+
+        private async Task FlattenHL2Textures(string tf2Directory, bool upscaleTextures, string hl2WorkingDirectory)
+        {
+            AnsiConsole.WriteLine("Flattening HL2 textures...");
+            await AnsiConsole.Status().StartAsync("Starting", async context =>
+            {
+                await _flattenTexturesService.GenerateFlatTextures(_defaults.HL2TexturesPackage(tf2Directory), await _defaults.HL2MaterialList(), hl2WorkingDirectory, upscaleTextures, (string status) => context.Status(status));
+            });
+        }
+
+        private async Task FlattenTF2Textures(string tf2Directory, bool upscaleTextures, string tf2WorkingDirectory)
+        {
+            AnsiConsole.WriteLine("Flattening TF2 textures...");
+            await AnsiConsole.Status().StartAsync("Starting", async context =>
+            {
+                await _flattenTexturesService.GenerateFlatTextures(_defaults.TF2TexturesPackage(tf2Directory), await _defaults.TF2MaterialList(), tf2WorkingDirectory, upscaleTextures, (string status) => context.Status(status));
+            });
         }
     }
 }
