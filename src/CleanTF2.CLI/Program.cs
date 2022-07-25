@@ -70,7 +70,8 @@ namespace CleanTF2.CLI
                 .AddTransient<IFlatMaterialGenerator, FlatMaterialGenerator>()
                 .AddTransient<IVPKGenerator, VPKGenerator>()
                 .AddTransient<IFlattenService, FlattenService>()
-                .AddTransient<IFlattenTexturesService, FlattenTexturesService>();
+                .AddTransient<IFlattenTexturesService, FlattenTexturesService>()
+                .AddSingleton<Defaults>();
         }
     }
 }
