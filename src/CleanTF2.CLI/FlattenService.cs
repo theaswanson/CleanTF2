@@ -46,10 +46,13 @@ namespace CleanTF2.CLI
             AnsiConsole.WriteLine("Consolidating textures...");
             var consolidateTo = Path.Combine(currentDirectory, "flat-textures");
             _flattenTexturesService.ConsolidateTextures(consolidateTo, new List<string> { tf2WorkingDirectory, hl2WorkingDirectory });
+            _directory.Delete(workingDirectory, recursive: true);
 
             // Create output
             AnsiConsole.WriteLine("Creating final output...");
             var generatedFiles = await _flattenTexturesService.CreateOutput(tf2Directory, consolidateTo, outputType);
+
+            _flattenTexturesService.CleanUp(consolidateTo, outputType);
 
             // Print file paths
             if (!generatedFiles.Any())
@@ -58,19 +61,12 @@ namespace CleanTF2.CLI
             }
             else
             {
-                AnsiConsole.WriteLine("Output:");
+                AnsiConsole.WriteLine("Done! Created the following:");
                 foreach (var file in generatedFiles)
                 {
                     AnsiConsole.WriteLine(file);
                 }
             }
-
-            // Delete working directories
-            AnsiConsole.WriteLine("Cleaning up...");
-            // TODO: ensure that these directories are the ones that we should be deleting.
-            // Don't want to delete any critical files
-            _directory.Delete(workingDirectory, recursive: true);
-            _directory.Delete(consolidateTo, recursive: true);
         }
     }
 }

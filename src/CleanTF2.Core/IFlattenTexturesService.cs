@@ -10,5 +10,11 @@
         /// <param name="textureDirectories"></param>
         void ConsolidateTextures(string consolidateToThisDirectory, IEnumerable<string> textureDirectories);
         Task<IEnumerable<string>> CreateOutput(string tf2Directory, string flattenedMaterialsDirectory, FlattenOutputType outputType);
+        /// <summary>
+        /// Removes the flattened texture files, depending on the output type. 
+        /// </summary>
+        /// <param name="flattenedMaterialsDirectory"></param>
+        /// <param name="outputType"></param>
+        void CleanUp(string flattenedMaterialsDirectory, FlattenOutputType outputType);
     }
 }

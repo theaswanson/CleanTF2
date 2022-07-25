@@ -59,5 +59,21 @@ namespace CleanTF2.Core
 
             return generatedFiles;
         }
+
+        /// <inheritdoc/>
+        public void CleanUp(string flattenedMaterialsDirectory, FlattenOutputType outputType)
+        {
+            switch (outputType)
+            {
+                case FlattenOutputType.SingleVPK:
+                    _directory.Delete(flattenedMaterialsDirectory, recursive: true);
+                    break;
+                case FlattenOutputType.MultiChunkVPK:
+                    _directory.Delete(flattenedMaterialsDirectory, recursive: true);
+                    break;
+                case FlattenOutputType.TextureFiles:
+                    break;
+            }
+        }
     }
 }
